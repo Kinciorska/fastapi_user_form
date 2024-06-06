@@ -95,6 +95,7 @@ __pypackages__/
 
 # Environments
 envs/.postgres
+envs/.redis
 .venv
 env/
 venv/

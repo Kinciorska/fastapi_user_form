@@ -1,6 +1,6 @@
 # FastAPI User Form App
 
-This application is created to save user information in FastAPI using synchronous requests. 
+This application is created to save user information in FastAPI using both synchronous and asynchronous requests with celery + redis. 
 
 
 ## Getting Started
@@ -22,15 +22,26 @@ Environment files should be located in .envs directory, examples of these enviro
     ``` 
    pip install -r requirements.txt
     ```
-3. Run the app
+3. Run Redis Stack in Docker
     ``` 
-   fastapi dev app/main.py
+   docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:7.2.0-v10
+    ```
+4. Run the app
+    ``` 
+   fastapi dev
+    ```
+5. Start celery workers (N times, N - worker number)
+   ``` 
+   celery -A config.celery_app worker --loglevel=INFO --concurrency=10 -n workerN@%h
     ```
 
    
 ### Technologies
 - FastAPI
 - PostgreSQL
+- Celery
+- Redis
+- SQLAlchemy
 
 
 
