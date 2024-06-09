@@ -1,4 +1,4 @@
-# Flask User Form App
+# FastAPI User Form App
 
 This application is created to save user information in FlastAPI using both synchronous and asynchronous requests using celery + rabbitmq. 
 
