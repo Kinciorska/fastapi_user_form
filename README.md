@@ -1,49 +1,47 @@
-# FastAPI User Form App
+# Flask User Form App
 
-This application is created to save user information in FastAPI using both synchronous and asynchronous requests with celery + redis. 
+This application is created to save user information in FlastAPI using both synchronous and asynchronous requests using celery + rabbitmq. 
 
 
 ## Getting Started
 
 Follow these steps to build and run the app.
 
-Needed environment files:
+
+### Clone the repository
+```
+git clone https://github.com/Kinciorska/fastapi_user_form.git
+```
+
+### Change into the correct directory
+```
+cd whitefly_2
+```
+
+### Build the Docker Image:
+
+   Needed environment files:
 
 - .postgres
+- .rabbitmq
 
 Environment files should be located in .envs directory, examples of these environment files are available in the same directory.
  
+### Build and run the Docker container using
+```
+docker-compose up
+```
 
-1. Clone the repository
-    ```
-   git clone https://github.com/Kinciorska/fastapi_user_form.git
-    ```
-2. Install the necessary dependencies:
-    ``` 
-   pip install -r requirements.txt
-    ```
-3. Run Redis Stack in Docker
-    ``` 
-   docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:7.2.0-v10
-    ```
-4. Run the app
-    ``` 
-   fastapi dev
-    ```
-5. Start celery workers (N times, N - worker number)
-   ``` 
-   celery -A config.celery_app worker --loglevel=INFO --concurrency=10 -n workerN@%h
-    ```
-
-   
+### Start Celery worker (N - worker number)
+``` 
+ docker-compose run fastapi celery -A worker.celery_app worker --loglevel=INFO --concurrency=10 -n workerN@%h```
+``` 
 ### Technologies
 - FastAPI
 - PostgreSQL
+- RabbitMQ
 - Celery
-- Redis
-- SQLAlchemy
-
-
+- Docker
 
 #### License
 This app is open-source and distributed under the MIT License.

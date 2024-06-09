@@ -1,44 +1,39 @@
 import os
-import psycopg2
 
-from celery import Celery
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
-# Redis settings
-REDIS_ENV_DIR = os.path.join(BASE_DIR, 'envs/.redis')
+# RabbitMQ settings
 
-load_dotenv(REDIS_ENV_DIR)
+RABBITMQ_ENV_DIR = os.path.join(BASE_DIR, 'envs/.rabbitmq')
 
-REDIS_PROTOCOL = os.getenv('REDIS_PROTOCOL')
-REDIS_HOST = os.getenv('REDIS_HOST')
-REDIS_PORT = os.getenv('REDIS_PORT')
-REDIS_DB_NUMBER = os.getenv('REDIS_DB_NUMBER')
+load_dotenv(RABBITMQ_ENV_DIR)
 
-CELERY_BROKER_URL = f'{REDIS_PROTOCOL}://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_NUMBER}'
-CELERY_RESULT_BACKEND = f'{REDIS_PROTOCOL}://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_NUMBER}'
+PROTOCOL = os.getenv('RABBITMQ_PROTOCOL')
+USER = os.getenv('RABBITMQ_USER')
+PASSWORD = os.getenv('RABBITMQ_PASSWORD')
+HOST = os.getenv('RABBITMQ_HOST')
+PORT = os.getenv('RABBITMQ_PORT')
+VHOST = os.getenv('RABBITMQ_DEFAULT_VHOST')
+
+
+# Celery settings
+
+CELERY_BROKER_URL = f"{PROTOCOL}://{USER}:{PASSWORD}@{HOST}:{PORT}"
+CELERY_BACKEND_URL = "rpc://"
 
 
 class Config:
-    CELERY_BROKER_URL: str = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379/0")
-    CELERY_RESULT_BACKEND: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://127.0.0.1:6379/0")
+    CELERY_BROKER_URL: str = CELERY_BROKER_URL
+    CELERY_RESULT_BACKEND: str = CELERY_BACKEND_URL
 
 
 settings = Config()
 
-
 app = FastAPI()
-
-
-celery_app = Celery(
-    __name__,
-    broker=settings.CELERY_BROKER_URL,
-    backend=settings.CELERY_RESULT_BACKEND
-)
-celery_app.autodiscover_tasks()
 
 
 # PostgreSQL config
@@ -47,9 +42,10 @@ POSTGRES_ENV_DIR = os.path.join(BASE_DIR, 'envs/.postgres')
 
 load_dotenv(POSTGRES_ENV_DIR)
 
-POSTGRES_USER = os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_USER = os.getenv('POSTGRES_NON_ROOT_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_NON_ROOT_PASSWORD')
 POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 POSTGRES_DATABASE = os.getenv('POSTGRES_DATABASE')
+POSTGRES_PORT = os.getenv('POSTGRES_PORT')
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
