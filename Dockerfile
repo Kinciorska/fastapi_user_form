@@ -34,6 +34,6 @@ RUN adduser --system --no-create-home nonroot
 
 USER nonroot
 
-EXPOSE 5000
+EXPOSE 8000
 
 COPY . /code/

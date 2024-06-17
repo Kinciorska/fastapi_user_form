@@ -6,3 +6,4 @@ passlib==1.7.4
 phonenumbers==8.13.38
 psycopg2-binary==2.9.9
 redis==5.0.5
+uvicorn==0.30.1

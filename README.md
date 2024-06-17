@@ -15,7 +15,7 @@ git clone https://github.com/Kinciorska/fastapi_user_form.git
 
 ### Change into the correct directory
 ```
-cd whitefly_2
+cd fastapi_user_form
 ```
 
 ### Build the Docker Image:
@@ -29,12 +29,12 @@ Environment files should be located in .envs directory, examples of these enviro
  
 ### Build and run the Docker container using
 ```
-docker-compose up
+docker compose up
 ```
 
-### Start Celery worker (N - worker number)
+### Start Celery worker (N - worker number, C - CPU core number)
 ``` 
- docker-compose run fastapi celery -A worker.celery_app worker --loglevel=INFO --concurrency=10 -n workerN@%h```
+docker compose run fastapi celery -A worker.celery_app worker --loglevel=INFO --concurrency=C --autoscale=10,1  -n workerN@%h
 ``` 
 ### Technologies
 - FastAPI
